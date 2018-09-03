@@ -258,7 +258,6 @@ def pascalvoc(settings, file_list, mode, batch_size, shuffle):
             # layout: label | xmin | ymin | xmax | ymax | difficult
             bbox_labels = []
 
-
             if label_path.endswith('.json'):
                 import json
                 jsonData = open(label_path)
@@ -288,6 +287,9 @@ def pascalvoc(settings, file_list, mode, batch_size, shuffle):
                     bbox_sample.append(float((left+width)/bodyWidth))
                     bbox_sample.append(float((top+height)/bodyHeight))
                     bbox_sample.append(float(0.0))
+
+                    print ('bbox', bbox_sample)
+
                     bbox_labels.append(bbox_sample)
             elif label_path.endswith('.xml'):
                 root = xml.etree.ElementTree.parse(label_path).getroot()
