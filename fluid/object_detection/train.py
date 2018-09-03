@@ -16,7 +16,7 @@ add_arg = functools.partial(add_arguments, argparser=parser)
 # yapf: disable
 add_arg('learning_rate',    float, 0.001,     "Learning rate.")
 add_arg('batch_size',       int,   16,        "Minibatch size.")
-add_arg('num_passes',       int,   32,       "Epoch number.")
+add_arg('num_passes',       int,   8,       "Epoch number.")
 add_arg('use_gpu',          bool,  False,      "Whether use GPU.")
 add_arg('parallel',         bool,  False,      "Parallel.")
 add_arg('dataset',          str,   'pascalvoc', "coco2014, coco2017, and pascalvoc.")
@@ -117,7 +117,7 @@ def train(args,
     elif 'pascalvoc' in data_args.dataset:
         epocs = 19200 // batch_size // devices_num
         test_epocs = 4952 // batch_size
-        epocs //= 100
+        epocs = 5 # My set...
         test_epocs //= 100
 
         boundaries = [epocs * 40, epocs * 60, epocs * 80, epocs * 100]
@@ -179,6 +179,7 @@ def train(args,
 
     best_map = 0.
     def test(pass_id, best_map):
+        print ("Test with pass_id", pass_id)
         _, accum_map = map_eval.get_map_var()
         map_eval.reset(exe)
         every_pass_map=[]
@@ -188,7 +189,7 @@ def train(args,
             while True:
                 test_map, = exe.run(test_prog,
                                    fetch_list=[accum_map])
-                if batch_id % 20 == 0:
+                if batch_id % 5 == 0:
                     every_pass_map.append(test_map)
                     print("Batch {0}, map {1}".format(batch_id, test_map))
                 batch_id += 1
