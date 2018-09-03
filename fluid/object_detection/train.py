@@ -117,6 +117,9 @@ def train(args,
     elif 'pascalvoc' in data_args.dataset:
         epocs = 19200 // batch_size // devices_num
         test_epocs = 4952 // batch_size
+        epocs //= 100
+        test_epocs //= 100
+
         boundaries = [epocs * 40, epocs * 60, epocs * 80, epocs * 100]
         values = [
             learning_rate, learning_rate * 0.5, learning_rate * 0.25,
