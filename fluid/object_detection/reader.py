@@ -275,10 +275,10 @@ def pascalvoc(settings, file_list, mode, batch_size, shuffle):
                     print ("Warn, no buttons")
 
                 for button in buttons:
-                    left = button["left"]
-                    top = button["top"]
-                    width = button["width"]
-                    height = button["height"]
+                    left = button["left"] * 1.0
+                    top = button["top"] * 1.0
+                    width = button["width"] * 1.0
+                    height = button["height"] * 1.0
                     bbox_sample = []
                     # start from 1
                     bbox_sample.append(
@@ -291,7 +291,7 @@ def pascalvoc(settings, file_list, mode, batch_size, shuffle):
                     bbox_sample.append(float(0.0))
 
                     if _first_json_box:
-                        print ('bbox', bbox_sample)
+                        print ('bbox', bbox_sample, )
                         _first_json_box = False
 
                     bbox_labels.append(bbox_sample)
