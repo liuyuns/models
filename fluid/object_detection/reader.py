@@ -243,10 +243,12 @@ def pascalvoc(settings, file_list, mode, batch_size, shuffle):
 
     _first_json_box = True
 
+    batch_out = []
+    
     while True:
         if mode == "train" and shuffle:
             np.random.shuffle(images)
-        batch_out = []
+
         for image in images:
             image_path, label_path = image.split()
             image_path = os.path.join(settings.data_dir, image_path)
