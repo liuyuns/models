@@ -42,7 +42,7 @@ def build_program(is_train, main_prog, startup_prog, args, data_args,
     if 'coco' in data_args.dataset:
         num_classes = 91
     elif 'pascalvoc' in data_args.dataset:
-        num_classes = 21
+        num_classes = 1
 
     def get_optimizer():
         if not args.enable_ce:

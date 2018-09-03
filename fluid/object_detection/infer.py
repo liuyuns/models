@@ -46,7 +46,7 @@ def infer(args, data_args, image_path, model_dir):
         }
         label_list[0] = ['background']
     elif 'pascalvoc' in data_args.dataset:
-        num_classes = 21
+        num_classes = 1
         label_list = data_args.label_list
 
     image = fluid.layers.data(name='image', shape=image_shape, dtype='float32')

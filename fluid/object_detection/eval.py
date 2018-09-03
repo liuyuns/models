@@ -34,7 +34,7 @@ def eval(args, data_args, test_list, batch_size, model_dir=None):
     if 'coco' in data_args.dataset:
         num_classes = 91
     elif 'pascalvoc' in data_args.dataset:
-        num_classes = 21
+        num_classes = 1
 
     image = fluid.layers.data(name='image', shape=image_shape, dtype='float32')
     gt_box = fluid.layers.data(
