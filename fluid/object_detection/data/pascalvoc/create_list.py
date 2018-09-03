@@ -6,15 +6,20 @@ import random
 devkit_dir = './VOCdevkit'
 years = ['2007', '2012']
 
+years = ['2020'] # Our sets
+
 
 def get_dir(devkit_dir, year, type):
+    if year == '2020':
+        return osp.join('', 'myset', type)
+
     return osp.join(devkit_dir, 'VOC' + year, type)
 
 
 def walk_dir(devkit_dir, year):
     filelist_dir = get_dir(devkit_dir, year, 'ImageSets/Main')
     annotation_dir = get_dir(devkit_dir, year, 'Annotations')
-    img_dir = get_dir(devkit_dir, year, 'JPEGImages')
+    img_dir = get_dir(devkit_dir, year, 'Images' if year == '2020' else 'JPEGImages')
     trainval_list = []
     test_list = []
     added = set()
@@ -34,8 +39,8 @@ def walk_dir(devkit_dir, year):
                 if name_prefix in added:
                     continue
                 added.add(name_prefix)
-                ann_path = osp.join(annotation_dir, name_prefix + '.xml')
-                img_path = osp.join(img_dir, name_prefix + '.jpg')
+                ann_path = osp.join(annotation_dir, name_prefix + ('.json' if year == '2020' else '.xml'))
+                img_path = osp.join(img_dir, name_prefix + ('.jpg' if year != '2020' else '.png'))
                 assert os.path.isfile(ann_path), 'file %s not found.' % ann_path
                 assert os.path.isfile(img_path), 'file %s not found.' % img_path
                 img_ann_list.append((img_path, ann_path))

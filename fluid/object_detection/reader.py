@@ -257,20 +257,54 @@ def pascalvoc(settings, file_list, mode, batch_size, shuffle):
 
             # layout: label | xmin | ymin | xmax | ymax | difficult
             bbox_labels = []
-            root = xml.etree.ElementTree.parse(label_path).getroot()
-            for object in root.findall('object'):
-                bbox_sample = []
-                # start from 1
-                bbox_sample.append(
-                    float(settings.label_list.index(object.find('name').text)))
-                bbox = object.find('bndbox')
-                difficult = float(object.find('difficult').text)
-                bbox_sample.append(float(bbox.find('xmin').text) / im_width)
-                bbox_sample.append(float(bbox.find('ymin').text) / im_height)
-                bbox_sample.append(float(bbox.find('xmax').text) / im_width)
-                bbox_sample.append(float(bbox.find('ymax').text) / im_height)
-                bbox_sample.append(difficult)
-                bbox_labels.append(bbox_sample)
+
+
+            if label_path.endswith('.json'):
+                import json
+                jsonData = open(label_path)
+                regionInfo = json.load(jsonData)
+
+                bodyBound = regionInfo["bodyBound"]
+
+                bodyWidth = bodyBound["width"]
+                bodyHeight = bodyBound["height"]
+
+                buttons = regionInfo["buttons"]
+                if len(buttons) == 0:
+                    print ("Warn, no buttons")
+
+                for button in buttons:
+                    left = button["left"]
+                    top = button["top"]
+                    width = button["width"]
+                    height = button["height"]
+                    bbox_sample = []
+                    # start from 1
+                    bbox_sample.append(
+                        float(settings.label_list.index('button')))
+                    # xmin, ymin, xmax, ymax, difficult
+                    bbox_sample.append(float(left/bodyWidth))
+                    bbox_sample.append(float(top/bodyHeight))
+                    bbox_sample.append(float((left+width)/bodyWidth))
+                    bbox_sample.append(float((top+height)/bodyHeight))
+                    bbox_sample.append(float(0.0))
+                    bbox_labels.append(bbox_sample)
+            elif label_path.endswith('.xml'):
+                root = xml.etree.ElementTree.parse(label_path).getroot()
+                for object in root.findall('object'):
+                    bbox_sample = []
+                    # start from 1
+                    bbox_sample.append(
+                        float(settings.label_list.index(object.find('name').text)))
+                    bbox = object.find('bndbox')
+                    difficult = float(object.find('difficult').text)
+                    bbox_sample.append(float(bbox.find('xmin').text) / im_width)
+                    bbox_sample.append(float(bbox.find('ymin').text) / im_height)
+                    bbox_sample.append(float(bbox.find('xmax').text) / im_width)
+                    bbox_sample.append(float(bbox.find('ymax').text) / im_height)
+                    bbox_sample.append(difficult)
+                    bbox_labels.append(bbox_sample)
+
             im, sample_labels = preprocess(im, bbox_labels, mode, settings)
             sample_labels = np.array(sample_labels)
             if len(sample_labels) == 0: continue
