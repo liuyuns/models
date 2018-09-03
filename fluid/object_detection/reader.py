@@ -241,6 +241,8 @@ def pascalvoc(settings, file_list, mode, batch_size, shuffle):
         images = images[:settings.toy] if len(images) > settings.toy else images
     print("{} on {} with {} images".format(mode, settings.dataset, len(images)))
 
+    _first_json_box = True
+
     while True:
         if mode == "train" and shuffle:
             np.random.shuffle(images)
@@ -288,7 +290,9 @@ def pascalvoc(settings, file_list, mode, batch_size, shuffle):
                     bbox_sample.append(float((top+height)/bodyHeight))
                     bbox_sample.append(float(0.0))
 
-                    print ('bbox', bbox_sample)
+                    if _first_json_box:
+                        print ('bbox', bbox_sample)
+                        _first_json_box = False
 
                     bbox_labels.append(bbox_sample)
             elif label_path.endswith('.xml'):
